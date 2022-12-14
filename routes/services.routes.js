@@ -22,36 +22,6 @@ router.get('/:service_id', (req, res, next) => {
     });
 });
 
-//Attempt 1 NEW
-router.get('/services/:id', (req, res, next) => {
-    console.log(req.params.id)
-   Service.findById(req.params.id)
-    .then((serviceFromDb) => {
-      console.log(serviceFromDb)
-    res.json({service: serviceFromDb})
-    }).catch((err)=> {
-        res.json(err)
-    })
-  
-    })
-    //END NEW
-
-//Attempt 2 NEW
-router.get('/services', (req, res, next) => {
-    Service.find()
-    .then((serviceFromDb) => {
-        console.log({serviceFromDb})
-        data = {
-            services: serviceFromDb
-        }
-        res.json(data);
-    })
-    .catch((err) => {
-        res.json(err)
-    });
-})
-//END NEW
-
 // Create
 router.post('/create', (req, res, next) => {
     
@@ -62,11 +32,13 @@ router.post('/create', (req, res, next) => {
 		time: req.body.time,
         price: req.body.price,
 	};
-
-    Service.create({serviceToCreate})
+   
+    Service.create(serviceToCreate)
     .then((createdService) => {
+       
         res.json(createdService);
     }).catch((err) => {
+      
         res.json(err);
 });
 });
@@ -75,7 +47,7 @@ router.post('/create', (req, res, next) => {
 // Update
 //NEW
 router.get('/services/:id/edit', (req, res, next) => {
-    Services.findById(req.params.id)
+    Service.findById(req.params.id)
     .then(serviceFromDb => {
         console.log(serviceFromDb);
         res.json(serviceFromDb);
@@ -83,9 +55,8 @@ router.get('/services/:id/edit', (req, res, next) => {
 })
 //END NEW
 
-router.post('/services/:id', (req, res, next) => {
-    Service.findByIdAndUpdate(req.body.id, {
-        // image: req.body.image,
+router.post('/edit/:id', (req, res, next) => {
+    Service.findByIdAndUpdate(req.params.id, {
 		serviceType: req.body.serviceType,
 		additionalInfo: req.body.additionalInfo,
 		time: req.body.time,
@@ -100,11 +71,13 @@ router.post('/services/:id', (req, res, next) => {
 });
 
 // Delete
-router.delete('/:id/delete', (req, res) => {
-    Service.findByIdAndDelete(req.body.service_id).then(() => {
-        res.json({success: true, res: `Service ${req.body.service_id} has been deleted!`});
-    }).catch(err => {
-        res.json({success: false, res: err});
+router.post('/delete', (req,res,next) => {
+    Service.findByIdAndRemove(req.body.id)
+    .then(() => {
+        res.json(req.params.id)
     })
-});
+    .catch((err) => {
+        res.json({err, success: false})
+    })
+})
 module.exports = router;

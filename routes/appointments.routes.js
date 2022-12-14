@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
     Appointments.findById(req.params.id)
     .then((appointmentFromDb) => {
-        res.json({appointment: appointmentFromDb});
+        res.json(appointmentFromDb);
     }).catch(err => {
         res.json(err);
     });
@@ -33,7 +33,7 @@ router.post('/create', (req, res, next) => {
         appointmentType: req.body.appointmentType,
         date: req.body.date,
         time: req.body.time,
-        appointmentDetails: req.body.appointmentDetails,
+
 	};
 
     Appointments.create(appointmentToCreate)
@@ -55,8 +55,8 @@ router.get('/appointments/:id/edit', (req, res, next) => {
 })
 //END NEW
 
-router.post('/:id', (req, res, next) => {
-    Appointments.findByIdAndUpdate(req.body.appointment_id, {
+router.post('/edit/:id', (req, res, next) => {
+    Appointments.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
 		email: req.body.email,
@@ -64,7 +64,7 @@ router.post('/:id', (req, res, next) => {
         appointmentType: req.body.appointmentType,
         date: req.body.date,
         time: req.body.time,
-        appointmentDetails: req.body.appointmentDetails,
+
     }, {new:true})
     .then((response) => {
         res.json(response);
@@ -75,12 +75,13 @@ router.post('/:id', (req, res, next) => {
 });
 
 // Delete
-router.delete('/:id/delete', (req, res, next) => {
-    Appointments.findByIdAndDelete(req.body.appointment_id)
+router.post('/delete', (req,res,next) => {
+    Appointments.findByIdAndRemove(req.body.id)
     .then(() => {
-        res.json({success: true, res: `Appointment ${req.body.appointment_id} has been deleted!`});
-    }).catch(err => {
-        res.json({success: false, res: err});
+        res.json(req.params.id)
     })
-});
+    .catch((err) => {
+        res.json({err, success: false})
+    })
+})
 module.exports = router;

@@ -15,7 +15,7 @@ const serviceSchema = new Schema({
         type: String
     },
     price: { 
-        type: Number,
+        type: String,
     },   
 }, {
     timestamps: true

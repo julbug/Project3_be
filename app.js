@@ -16,7 +16,18 @@ const cors = require('cors');
 const app = express();
 
 //USE THIS FOR REACT
-app.use(cors());
+let whitelist = ['http://localhost:3000'];
+let corsOptions = {
+    origin: (origin, callback)=>{
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },credentials: true
+}
+
+app.use(cors(corsOptions));
 
 //==========================================
 const session = require('express-session');
@@ -75,9 +86,6 @@ app.use("/auth", authRoutes);
 
 const Appointments = require('./routes/appointments.routes');
 app.use('/appointments', Appointments);
-
-// const Location = require('./routes/location.routes');
-// app.use('/locations', Location);
 
 const Services = require('./routes/services.routes');
 app.use('/services', Services);

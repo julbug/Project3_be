@@ -10,8 +10,6 @@ const appointmentSchema = new Schema({
   appointmentType: String,
   date: Date,
   time: String,
-  appointmentDetails: String,
-
 
 }, {
     timestamps: true
@@ -21,7 +19,7 @@ const Appointment = model('Appointment', appointmentSchema);
 module.exports = Appointment;
 
 
-//OTHER
+// // OTHER
 // const mongoose = require('mongoose');
 
 
@@ -40,11 +38,22 @@ module.exports = Appointment;
 
 // const appointmentSchema = new Schema({
 //   id: ObjectId,
-//   name: String,
+//   firstName: String,
+//   lastName: String,
 //   email: String,
 //   phone: Number,
-//   slots:{type: ObjectId, ref: 'Slot'},
-//   created_at: Date
+//   appointmentType: String,
+//   date: Date,
+//   time: String,
+//   slots:{type: [
+//     {
+//       type: Schema.Types.ObjectId, 
+//       ref: 'Slot',
+//     }
+//     ]
+//   }
+// },{
+//     timestamps: true
 // });
 
 // const Appointment = model('Appointment', appointmentSchema);
