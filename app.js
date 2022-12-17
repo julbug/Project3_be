@@ -52,7 +52,8 @@ app.use(
         maxAge: 600000
       }, // ADDED code below !!!
       store: MongoStore.create({
-        mongoUrl: process.env.MONGOURL
+        mongoUrl: process.env.MONGOURL,
+        ttl:24*60*60
       })
     })
   );
