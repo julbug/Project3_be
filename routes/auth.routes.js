@@ -14,6 +14,7 @@ router.post('/signup', (req, res, next)=>{
       console.log(`Password hash: ${hashedPassword}`);
       User.create({
         username: req.body.username,
+        email: req.body.email,
         password: hashedPassword,
     })
       res.redirect('/')
@@ -21,11 +22,34 @@ router.post('/signup', (req, res, next)=>{
     .catch(error => next(error));
 });
 
+
+function serializeTheUserObject(userObj){
+  let result = {};
+  if(userObj.username) result.username = userObj.username;
+  if(userObj.email) result.email = userObj.email;
+  return result;
+}
+
+
+router.get('/serializeuser', (req, res, next)=>{
+  console.log(req.session);
+  console.log(req.session.currentlyLoggedIn);
+
+  if(!req.session.currentlyLoggedIn) res.json(null);
+
+  User.findById(req.session.currentlyLoggedIn._id)
+  .then((theUser)=>{
+    res.json(serializeTheUserObject(theUser))
+  })
+  .catch((err)=>{
+    console.log(err)
+  })
+})
+
 //=======================LOGIN
 router.post('/login', (req, res, next) => {
-  if (req.body.username === '' || req.body.password === '') {
-    //line 36 new
-    req.flash('error', 'Please make sure to fill in both fields');
+  if (req.body.username === '' || req.body.email === '' || req.body.password === '') {
+    req.flash('error', 'Please make sure to fill in all fields');
     res.redirect('/login');
     return;
   }
@@ -33,25 +57,28 @@ router.post('/login', (req, res, next) => {
   User.findOne({ username: req.body.username })
     .then(resultFromDB => {
       if (!resultFromDB) {
-        //line 45 new 
-        req.flash('error', 'could not find that username')
-        res.redirect('/login');
+        res.json('error')
         return;
       } else if (bcryptjs.compareSync(req.body.password, resultFromDB.password)) {
         console.log("found user", resultFromDB);
         req.session.currentlyLoggedIn = resultFromDB;
         console.log(req.session);
-        // line 53 new
-        req.flash('success', 'Successfully Logged In as ' + resultFromDB.username);
-        res.redirect('/profile');
+        res.json(resultFromDB);
         return;
       } else {
-        //line 58 new
-        req.flash('error', 'this username/password combination could not be authenticated. please try again');
-        res.redirect('/login');
+        res.json('error');
       }
     })
     .catch(error => console.log(error));
+});
+
+//================ LOGOUT
+
+router.post("/logout", (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) console.log(err);
+    res.json({ message: "successfully logged out" });
+  });
 });
 
 
@@ -60,8 +87,6 @@ router.post('/login', (req, res, next) => {
 router.post('/new-password', (req, res, next)=>{
 
   if(req.body.newpass !== req.body.confirmnewpass){
-    res.redirect("/profile")
-    // need to show an error message here but cant yet
   }
 
   User.findById(req.session.currentlyLoggedIn._id)
@@ -77,7 +102,6 @@ router.post('/new-password', (req, res, next)=>{
           password: hashedPassword
         })
         .then(()=>{
-          res.redirect('/profile');
 
         })
       })

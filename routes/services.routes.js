@@ -1,6 +1,7 @@
 const express = require('express');
 const router = require("express").Router();
 const Service = require('../models/Service.model');
+const uploadSys = require('../config/cloudinary_service.js');
 
 // Read
 router.get('/', (req, res, next) => {
@@ -23,10 +24,10 @@ router.get('/:service_id', (req, res, next) => {
 });
 
 // Create
-router.post('/create', (req, res, next) => {
+router.post('/create', uploadSys.single("image"), (req, res, next) => {
     
     const serviceToCreate = {
-		// image: req.body.image,
+		image: req.file.path,
 		serviceType: req.body.serviceType,
 		additionalInfo: req.body.additionalInfo,
 		time: req.body.time,
