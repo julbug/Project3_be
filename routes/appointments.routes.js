@@ -49,7 +49,7 @@ router.post('/create', (req, res, next) => {
 router.get('/appointments/:id/edit', (req, res, next) => {
     Appointments.findById(req.params.id)
     .then(appointmentFromDb => {
-        console.log(appointmentFromDb);
+        // console.log(appointmentFromDb);
         res.json(appointmentFromDb);
 }).catch(err => {console.log({err})});
 })

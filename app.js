@@ -3,6 +3,8 @@ require('dotenv/config');
 // ℹ️ Connects to the database
 require('./db');
 
+const cookieParser = require("cookie-parser");
+
 const express = require('express');
 
 //USE THIS FOR REACT
@@ -35,6 +37,10 @@ let flash = require('connect-flash');
 
 require("./config")(app);
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
 // default value for title local
 const projectName = 'ArchDeco';
 const capitalized = string => string[0].toUpperCase() + string.slice(1).toLowerCase();
@@ -52,8 +58,7 @@ app.use(
         maxAge: 600000
       }, // ADDED code below !!!
       store: MongoStore.create({
-        mongoUrl: process.env.MONGOURL,
-        ttl:24*60*60
+        mongoUrl: process.env.MONGOURL
       })
     })
   );
@@ -61,7 +66,8 @@ app.use(
   app.use(flash());
 
   app.use(function (req, res, next) {
-
+console.log("Hello-app.js")
+console.log(req.session)
     res.locals.theUser = req.session.currentlyLoggedIn;
     res.locals.errorMessage = req.flash("error");
     res.locals.successMessage = req.flash("success");

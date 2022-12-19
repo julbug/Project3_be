@@ -11,7 +11,7 @@ router.post('/signup', (req, res, next)=>{
     .genSalt(saltRounds)
     .then(salt => bcryptjs.hash(req.body.password, salt))
     .then(hashedPassword => {
-      console.log(`Password hash: ${hashedPassword}`);
+      // console.log(`Password hash: ${hashedPassword}`);
       User.create({
         username: req.body.username,
         email: req.body.email,
@@ -32,8 +32,9 @@ function serializeTheUserObject(userObj){
 
 
 router.get('/serializeuser', (req, res, next)=>{
+  console.log("Serialize-auth.js")
   console.log(req.session);
-  console.log(req.session.currentlyLoggedIn);
+  // console.log(req.session.currentlyLoggedIn);
 
   if(!req.session.currentlyLoggedIn) res.json(null);
 
@@ -42,7 +43,7 @@ router.get('/serializeuser', (req, res, next)=>{
     res.json(serializeTheUserObject(theUser))
   })
   .catch((err)=>{
-    console.log(err)
+    (err)
   })
 })
 
@@ -60,8 +61,9 @@ router.post('/login', (req, res, next) => {
         res.json('error')
         return;
       } else if (bcryptjs.compareSync(req.body.password, resultFromDB.password)) {
-        console.log("found user", resultFromDB);
+        // console.log("found user", resultFromDB);
         req.session.currentlyLoggedIn = resultFromDB;
+        console.log("Login-auth.js")
         console.log(req.session);
         res.json(resultFromDB);
         return;

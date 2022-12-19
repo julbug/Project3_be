@@ -50,7 +50,7 @@ router.post('/create', uploadSys.single("image"), (req, res, next) => {
 router.get('/services/:id/edit', (req, res, next) => {
     Service.findById(req.params.id)
     .then(serviceFromDb => {
-        console.log(serviceFromDb);
+        // console.log(serviceFromDb);
         res.json(serviceFromDb);
 }).catch(err => {console.log({err})});
 })
