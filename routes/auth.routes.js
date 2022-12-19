@@ -63,6 +63,7 @@ router.post('/login', (req, res, next) => {
       } else if (bcryptjs.compareSync(req.body.password, resultFromDB.password)) {
         // console.log("found user", resultFromDB);
         req.session.currentlyLoggedIn = resultFromDB;
+        req.session.save();
         console.log("Login-auth.js")
         console.log(req.session);
         res.json(resultFromDB);
