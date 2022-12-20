@@ -66,8 +66,8 @@ app.use(
   app.use(flash());
 
   app.use(function (req, res, next) {
-console.log("Hello-app.js")
-console.log(req.session)
+// console.log("Hello-app.js")
+// console.log(req.session)
     res.locals.theUser = req.session.currentlyLoggedIn;
     res.locals.errorMessage = req.flash("error");
     res.locals.successMessage = req.flash("success");
