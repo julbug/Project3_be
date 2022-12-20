@@ -38,7 +38,7 @@ router.get('/serializeuser', (req, res, next)=>{
   User.findById(req.session.currentlyLoggedIn._id)
   .then((theUser)=>{
 
-    console.log(req.session);
+    console.log({theUser, session: req.session})
 
     res.json(serializeTheUserObject(theUser))
   })
