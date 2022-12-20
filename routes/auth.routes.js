@@ -17,7 +17,7 @@ router.post('/signup', (req, res, next)=>{
         email: req.body.email,
         password: hashedPassword,
     })
-      res.redirect('/')
+    res.json({success: true, res});
     })
     .catch(error => next(error));
 });
@@ -52,7 +52,7 @@ router.get('/serializeuser', (req, res, next)=>{
 router.post('/login', (req, res, next) => {
   if (req.body.username === '' || req.body.email === '' || req.body.password === '') {
     req.flash('error', 'Please make sure to fill in all fields');
-    res.redirect('/login');
+    res.json({success: true, res});
     return;
   }
  
