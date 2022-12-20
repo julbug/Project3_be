@@ -24,9 +24,11 @@ router.post('/signup', (req, res, next)=>{
 
 
 function serializeTheUserObject(userObj){
+  console.log(userObj)
   let result = {};
   if(userObj.username) result.username = userObj.username;
   if(userObj.email) result.email = userObj.email;
+  console.log(result)
   return result;
 }
 
@@ -37,8 +39,9 @@ router.get('/serializeuser', (req, res, next)=>{
   // console.log(req.session.currentlyLoggedIn);
 
   if(!req.session.currentlyLoggedIn) res.json(null);
-
   User.findById(req.session.currentlyLoggedIn._id)
+  
+  console.log(theUser)
   .then((theUser)=>{
     res.json(serializeTheUserObject(theUser))
   })
