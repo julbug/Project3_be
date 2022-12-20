@@ -35,10 +35,11 @@ function serializeTheUserObject(userObj){
 
 router.get('/serializeuser', (req, res, next)=>{
   if(!req.session.currentlyLoggedIn) res.json(null);
+  console.log({theUser, session: req.session})
   User.findById(req.session.currentlyLoggedIn._id)
   .then((theUser)=>{
 
-    console.log({theUser, session: req.session})
+    // console.log({theUser, session: req.session})
 
     res.json(serializeTheUserObject(theUser))
   })
