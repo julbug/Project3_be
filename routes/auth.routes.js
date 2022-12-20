@@ -34,15 +34,12 @@ function serializeTheUserObject(userObj){
 
 
 router.get('/serializeuser', (req, res, next)=>{
-  // console.log("Serialize-auth.js")
-  // console.log(req.session);
-  // console.log(req.session.currentlyLoggedIn);
-
   if(!req.session.currentlyLoggedIn) res.json(null);
   User.findById(req.session.currentlyLoggedIn._id)
-
-  console.log(theUser)
   .then((theUser)=>{
+
+    console.log(req.session);
+
     res.json(serializeTheUserObject(theUser))
   })
   .catch((err)=>{
@@ -64,11 +61,11 @@ router.post('/login', (req, res, next) => {
         res.json('error')
         return;
       } else if (bcryptjs.compareSync(req.body.password, resultFromDB.password)) {
-        // console.log("found user", resultFromDB);
         req.session.currentlyLoggedIn = resultFromDB;
         req.session.save();
-        // console.log("Login-auth.js")
-        // console.log(req.session);
+
+        console.log(req.session);
+
         res.json(resultFromDB);
         return;
       } else {
