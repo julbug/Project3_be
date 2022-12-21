@@ -51,8 +51,8 @@ router.get('/serializeuser', (req, res, next)=>{
 //=======================LOGIN
 router.post('/login', (req, res, next) => {
   if (req.body.username === '' || req.body.email === '' || req.body.password === '') {
-    req.flash('error', 'Please make sure to fill in all fields');
-    res.json({success: true, res});
+    // req.flash('error', 'Please make sure to fill in all fields');
+    res.json({success: false, message: 'Please make sure to fill in all fields'});
     return;
   }
  
@@ -67,7 +67,7 @@ router.post('/login', (req, res, next) => {
 
         console.log(req.session);
 
-        res.json(resultFromDB);
+        res.json({success: true, result: resultFromDB});
         return;
       } else {
         res.json('error');
@@ -88,32 +88,32 @@ router.post("/logout", (req, res, next) => {
 
 //================ CHANGE PASSWORD
 
-router.post('/new-password', (req, res, next)=>{
+// router.post('/new-password', (req, res, next)=>{
 
-  if(req.body.newpass !== req.body.confirmnewpass){
-  }
+//   if(req.body.newpass !== req.body.confirmnewpass){
+//   }
 
-  User.findById(req.session.currentlyLoggedIn._id)
-  .then(resultFromDB => {
-     if (bcryptjs.compareSync(req.body.oldpass, resultFromDB.password)) {
-      const saltRounds = 12;
-      bcryptjs
-      .genSalt(saltRounds)
-      .then(salt => bcryptjs.hash(req.body.newpass, salt))
-      .then(hashedPassword => {
+//   User.findById(req.session.currentlyLoggedIn._id)
+//   .then(resultFromDB => {
+//      if (bcryptjs.compareSync(req.body.oldpass, resultFromDB.password)) {
+//       const saltRounds = 12;
+//       bcryptjs
+//       .genSalt(saltRounds)
+//       .then(salt => bcryptjs.hash(req.body.newpass, salt))
+//       .then(hashedPassword => {
         
-        User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
-          password: hashedPassword
-        })
-        .then(()=>{
+//         User.findByIdAndUpdate(req.session.currentlyLoggedIn._id, {
+//           password: hashedPassword
+//         })
+//         .then(()=>{
 
-        })
-      })
-        .catch((err)=>{
-          next(err);
-        })
-  }
-})
-})
+//         })
+//       })
+//         .catch((err)=>{
+//           next(err);
+//         })
+//   }
+// })
+// })
 
 module.exports = router;
