@@ -13,12 +13,11 @@ const cors = require('cors');
 const app = express();
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-let flash = require('connect-flash');
 
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require("./config")(app);
 
-const projectName = 'fitness-app-api';
+const projectName = 'ArchDeco';
 const capitalized = string => string[0].toUpperCase() + string.slice(1).toLowerCase();
 
 app.locals.title = `${capitalized(projectName)}- Generated with Ironlauncher`;
@@ -28,33 +27,15 @@ app.locals.title = `${capitalized(projectName)}- Generated with Ironlauncher`;
 app.use(
     session({
       secret: '123secret',
+      cookieName: '321secret',
       resave: true,
       saveUninitialized: true,
-      cookie: {
-        maxAge: 600000
-      }, // ADDED code below !!!
       store: MongoStore.create({
         mongoUrl: process.env.MONGOURL
       })
     })
   );
   
-  app.use(flash());
- 
-
-  app.use(function (req, res, next) {
-    res.locals.theUser = req.session.currentlyLoggedIn;
-    res.locals.errorMessage = req.flash("error");
-    res.locals.successMessage = req.flash("success");
-    next();
-  })
-
-
-
-
-
-
-
 
 // Routes
 const indexRoutes = require("./routes/index.routes");
