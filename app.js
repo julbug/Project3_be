@@ -1,59 +1,35 @@
-require('dotenv/config');
+// ℹ️ Gets access to environment variables/settings
+// https://www.npmjs.com/package/dotenv
+require("dotenv").config();
 
 // ℹ️ Connects to the database
-require('./db');
+require("./db");
 
-const cookieParser = require("cookie-parser");
+// Handles http requests (express is node js framework)
+// https://www.npmjs.com/package/express
+const express = require("express");
 
-const express = require('express');
-
-//USE THIS FOR REACT
 const cors = require('cors');
-
-
 const app = express();
-
-//USE THIS FOR REACT
-let whitelist = [process.env.ORIGIN];
-let corsOptions = {
-    origin: (origin, callback)=>{
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    },credentials: true
-}
-
-app.use(cors(corsOptions));
-
-//==========================================
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-//==========================================
-
 let flash = require('connect-flash');
 
-
+// ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require("./config")(app);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-// default value for title local
-const projectName = 'ArchDeco';
+const projectName = 'fitness-app-api';
 const capitalized = string => string[0].toUpperCase() + string.slice(1).toLowerCase();
 
-app.locals.title = `${capitalized(projectName)}`;
+app.locals.title = `${capitalized(projectName)}- Generated with Ironlauncher`;
 
-// 👇 Start handling routes here
+
 
 app.use(
     session({
       secret: '123secret',
       resave: true,
-      saveUninitialized: false,
+      saveUninitialized: true,
       cookie: {
         maxAge: 600000
       }, // ADDED code below !!!
@@ -64,10 +40,9 @@ app.use(
   );
   
   app.use(flash());
+ 
 
   app.use(function (req, res, next) {
-// console.log("Hello-app.js")
-// console.log(req.session)
     res.locals.theUser = req.session.currentlyLoggedIn;
     res.locals.errorMessage = req.flash("error");
     res.locals.successMessage = req.flash("success");
@@ -75,7 +50,13 @@ app.use(
   })
 
 
-// 👇 Start handling routes here
+
+
+
+
+
+
+// Routes
 const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);
 
@@ -90,11 +71,7 @@ app.use('/services', Services);
 
 
 
+// To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
-
-
-//USE THIS FOR REACT
-app.use('*',cors());
-
 
 module.exports = app;
